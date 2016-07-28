@@ -10,8 +10,11 @@
 class QOpenGLTexture;
 class SceneGLWindow;
 
-class CubeGLScene : public AbstractGLScene
+class CubeGLScene : public QObject, public AbstractGLScene
 {
+    Q_OBJECT
+    Q_PROPERTY(float angle READ angle WRITE setAngle)
+
 public:
     CubeGLScene(SceneGLWindow *wnd);
     ~CubeGLScene(void);
@@ -19,6 +22,17 @@ public:
     void setTexture(const QImage& img);
     void initialize(void);
     void paint(void);
+
+    float angle(void) const
+    {
+        return m_angle;
+    }
+
+    void setAngle(const float angle)
+    {
+        m_angle = angle;
+        window()->update();
+    }
 
 protected:
     void initializeTexture(void);
@@ -29,6 +43,7 @@ private:
     QImage          m_tex;
     QOpenGLTexture* m_texture;
     bool            m_initialized = false;
+    float           m_angle = 0.0;
 
     struct TexturedPoint
     {

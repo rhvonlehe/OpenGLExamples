@@ -1,9 +1,9 @@
 #ifndef ABSTRACTGLSCENE_H
 #define ABSTRACTGLSCENE_H
 
+#include <QOpenGLWindow>
 #include <QOpenGLFunctions>
 
-class QOpenGLWindow;
 
 class AbstractGLScene : protected QOpenGLFunctions
 {

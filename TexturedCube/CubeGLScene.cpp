@@ -33,7 +33,7 @@ void CubeGLScene::paint(void)
     glLoadIdentity();
 
     glRotatef( 45, 1.0, 0.0, 0.0 );
-    glRotatef( 45, 0.0, 1.0, 0.0 );
+    glRotatef( m_angle, 0.0, 0.0, 1.0 );
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
