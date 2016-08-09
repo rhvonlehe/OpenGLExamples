@@ -8,10 +8,14 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     QMenu* fileMenu = menuBar()->addMenu("&File");
-    fileMenu->addAction("E&xit", this, &QWidget::close);
     fileMenu->addAction("&Import PLY file", this, &MainWindow::importPly);
+    fileMenu->addAction("E&xit", this, &QWidget::close);
 
     resize(QDesktopWidget().availableGeometry(this).size() * 0.7);
+
+    m_scene = new AppGLScene();
+
+
 }
 
 void MainWindow::importPly(void)

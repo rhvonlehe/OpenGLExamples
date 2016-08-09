@@ -3,6 +3,7 @@
 
 #include <QOpenGLFunctions>
 #include <QOpenGLWidget>
+#include <QOpenGLShaderProgram>
 #include "ScenePoint.h"
 
 class AppGLScene : public QOpenGLWidget, protected QOpenGLFunctions
@@ -12,7 +13,8 @@ public:
     AppGLScene();
     virtual ~AppGLScene();
 
-    void addScenePoints(const QVector<ScenePoint>& data);
+    void addScenePoints(QVector<ScenePoint>& data);
+    void paintScene(const QMatrix4x4 &mvMatrix);
 
 public slots:
 
@@ -22,8 +24,14 @@ protected:
     void initializeGL(void) Q_DECL_OVERRIDE;
 
 private:
-    QColor m_background;
+    qreal m_angle = 0;
+    QOpenGLShaderProgram m_shader;
     QVector<ScenePoint> m_data;
+
+    QColor m_background;
+    QMatrix4x4 m_modelMatrix;
+    QMatrix4x4 m_viewMatrix;
+    QMatrix4x4 m_projectionMatrix;
 };
 
 #endif // APPGLSCENE_H

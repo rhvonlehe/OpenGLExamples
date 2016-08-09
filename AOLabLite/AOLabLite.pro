@@ -5,7 +5,8 @@ HEADERS += \
     AppGLScene.h \
     PLYReader.h \
     MainWindow.h \
-    ScenePoint.h
+    ScenePoint.h \
+    GLHelpers.h
 
 SOURCES += \
     AppGLScene.cpp \

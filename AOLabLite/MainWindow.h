@@ -19,6 +19,7 @@ public slots:
 private:
     AppGLScene* m_scene;
 
+
 };
 
 #endif // MAINWINDOW_H
