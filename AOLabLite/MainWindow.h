@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 
+class QGridLayout;
 class AppGLScene;
 
 class MainWindow : public QMainWindow
@@ -17,6 +18,7 @@ public slots:
     void importPly(void);
 
 private:
+    QGridLayout* m_layout;
     AppGLScene* m_scene;
 
 

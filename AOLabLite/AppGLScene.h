@@ -24,11 +24,15 @@ protected:
     void initializeGL(void) Q_DECL_OVERRIDE;
 
 private:
+    void createGradient(void);
+    void drawBackground(QPainter& painter);
+
     qreal m_angle = 0;
     QOpenGLShaderProgram m_shader;
     QVector<ScenePoint> m_data;
 
     QColor m_background;
+    QRadialGradient m_gradient;
     QMatrix4x4 m_modelMatrix;
     QMatrix4x4 m_viewMatrix;
     QMatrix4x4 m_projectionMatrix;
