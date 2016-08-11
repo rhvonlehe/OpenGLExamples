@@ -7,6 +7,7 @@
 #include "AppGLScene.h"
 
 
+
 AppGLScene::AppGLScene()
 {
     QSurfaceFormat fmt;
@@ -69,6 +70,47 @@ void AppGLScene::drawScene(const QMatrix4x4 &mvMatrix)
     m_shader.disableAttributeArray("Normal");
 }
 
+void AppGLScene::viewFront(void)
+{
+    m_eye = {0, 0, 2};
+    m_up = {0, 1, 0};
+    update();
+}
+
+void AppGLScene::viewBack(void)
+{
+    m_eye = {0, 0, -2};
+    m_up = {0, 1, 0};
+    update();
+}
+
+void AppGLScene::viewLeft(void)
+{
+    m_eye = {-2, 0, 0};
+    m_up = {0, 1, 0};
+    update();
+}
+
+void AppGLScene::viewRight(void)
+{
+    m_eye = {2, 0, 0};
+    m_up = {0, 1, 0};
+    update();
+}
+
+void AppGLScene::viewTop(void)
+{
+    m_eye = {0, 2, 0};
+    m_up = {0, 0, -1};
+    update();
+}
+
+void AppGLScene::viewBottom(void)
+{
+    m_eye = {0, -2, 0};
+    m_up = {0, 0, -1};
+    update();
+}
 
 void AppGLScene::resizeGL(int w, int h)
 {
@@ -81,7 +123,7 @@ void AppGLScene::paintGL(void)
     m_projectionMatrix.perspective(90, qreal(window()->width())/qreal(window()->height()), 0.5, 40);
 
     m_viewMatrix.setToIdentity();
-    m_viewMatrix.lookAt({0,0,2}, {0,0,0}, {0, 1, 0});
+    m_viewMatrix.lookAt(m_eye, m_center, m_up);
 
     QPainter painter;
     painter.begin(this);
@@ -97,8 +139,9 @@ void AppGLScene::paintGL(void)
     glCullFace(GL_BACK);
 
     m_modelMatrix.setToIdentity();
-    m_modelMatrix.scale(0.03);
-    m_modelMatrix.rotate(m_angle, 0, 1, 0);
+    //m_modelMatrix.scale(0.03f); // upper.ply
+    m_modelMatrix.scale(2); // monkey.ply
+    m_modelMatrix.rotate(0, 0, 1, 0);
     m_modelMatrix.rotate(-90, 1, 0, 0);
 
     QMatrix4x4 modelViewMatrix = m_viewMatrix*m_modelMatrix;
@@ -144,9 +187,9 @@ void AppGLScene::createGradient(void)
     m_gradient.setCoordinateMode(QGradient::ObjectBoundingMode);
     m_gradient.setCenter(0.45, 0.50);
     m_gradient.setFocalPoint(0.40, 0.45);
-    m_gradient.setColorAt(0.0, QColor(85, 125, 162));
-    m_gradient.setColorAt(0.4, QColor(61, 93, 130));
-    m_gradient.setColorAt(0.8, QColor(16, 56, 121));
+    m_gradient.setColorAt(0.0, QColor(70, 110, 142));
+    m_gradient.setColorAt(0.4, QColor(46, 78, 110));
+    m_gradient.setColorAt(0.8, QColor(0, 41, 101));
 }
 
 void AppGLScene::drawBackground(QPainter& painter)

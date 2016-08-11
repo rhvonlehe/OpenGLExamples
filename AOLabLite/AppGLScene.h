@@ -17,6 +17,12 @@ public:
     void drawScene(const QMatrix4x4 &mvMatrix);
 
 public slots:
+    void viewFront(void);
+    void viewBack(void);
+    void viewLeft(void);
+    void viewRight(void);
+    void viewTop(void);
+    void viewBottom(void);
 
 protected:
     void resizeGL(int w, int h) Q_DECL_OVERRIDE;
@@ -31,6 +37,9 @@ private:
     QOpenGLShaderProgram m_shader;
     QVector<ScenePoint> m_data;
 
+    QVector3D m_eye = {0, 0, 2};
+    QVector3D m_center = {0, 0, 0};
+    QVector3D m_up = {0, 1, 0};
     QColor m_background;
     QRadialGradient m_gradient;
     QMatrix4x4 m_modelMatrix;
