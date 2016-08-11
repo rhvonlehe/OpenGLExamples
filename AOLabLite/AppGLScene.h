@@ -14,7 +14,7 @@ public:
     virtual ~AppGLScene();
 
     void addScenePoints(QVector<ScenePoint>& data);
-    void paintScene(const QMatrix4x4 &mvMatrix);
+    void drawScene(const QMatrix4x4 &mvMatrix);
 
 public slots:
 
@@ -27,7 +27,7 @@ private:
     void createGradient(void);
     void drawBackground(QPainter& painter);
 
-    qreal m_angle = 0;
+    qreal m_angle = 30;
     QOpenGLShaderProgram m_shader;
     QVector<ScenePoint> m_data;
 

@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     QLabel* label = new QLabel(this);
     label->setText("This is a label");
 
-    m_layout->addWidget(m_scene, 0, 1, 5, 1);
+    m_layout->addWidget(m_scene, 0, 1, 1, 5);
     m_layout->addWidget(label, 0, 0, 1, 1);
     mainWidget->setLayout(m_layout);
 
@@ -35,8 +35,8 @@ void MainWindow::importPly(void)
     // TODO: Create a modal dialog to do this, but as a first pass
     // just load a hard-coded file
     //
-//    PLYReader reader(":/upper.ply");
-    PLYReader reader(":/monkey.ply");
+    PLYReader reader(":/upper.ply");
+//    PLYReader reader(":/monkey.ply");
     QVector<ScenePoint> plyData;
 
     if (reader.read())
