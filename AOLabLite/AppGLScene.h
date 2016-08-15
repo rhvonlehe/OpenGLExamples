@@ -11,6 +11,8 @@ class AppGLScene : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
 public:
+    enum Projection {PROJ_PERSP, PROJ_ORTHO, PROJ_FRUST};
+
     AppGLScene();
     virtual ~AppGLScene();
 
@@ -37,13 +39,15 @@ protected:
 private:
     void createGradient(void);
     void drawBackground(QPainter& painter);
+    void setProjectionMatrix(void);
 
     QPoint m_lastPos;
     qreal m_angle = 30;
-    float m_scale = .03;
+    float m_scale = 0.1f;
     QOpenGLShaderProgram m_shader;
     QVector<ScenePoint> m_data;
 
+    Projection m_proj = PROJ_PERSP;
     QVector3D m_eye = {0, 0, 2};
     QVector3D m_center = {0, 0, 0};
     QVector3D m_up = {0, 1, 0};

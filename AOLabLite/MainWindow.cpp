@@ -56,7 +56,7 @@ void MainWindow::importPly(void)
     // TODO: Create a modal dialog to do this, but as a first pass
     // just load a hard-coded file
     //
-//    PLYReader reader(":/upper.ply");
+//  PLYReader reader(":/upper.ply");
     PLYReader reader(":/monkey.ply");
     QVector<ScenePoint> plyData;
 

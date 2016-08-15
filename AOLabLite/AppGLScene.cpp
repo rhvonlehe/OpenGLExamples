@@ -17,6 +17,7 @@ AppGLScene::AppGLScene()
 
     createGradient();
 
+    setFocusPolicy(Qt::StrongFocus);  // Needed to get key presses
 }
 
 AppGLScene::~AppGLScene()
@@ -120,8 +121,7 @@ void AppGLScene::resizeGL(int w, int h)
 
 void AppGLScene::paintGL(void)
 {
-    m_projectionMatrix.setToIdentity();
-    m_projectionMatrix.perspective(90, qreal(window()->width())/qreal(window()->height()), 0.5, 40);
+    setProjectionMatrix();
 
     m_viewMatrix.setToIdentity();
     m_viewMatrix.lookAt(m_eye, m_center, m_up);
@@ -140,8 +140,7 @@ void AppGLScene::paintGL(void)
     glCullFace(GL_BACK);
 
     m_modelMatrix.setToIdentity();
-    //m_modelMatrix.scale(0.03f); // upper.ply
-    m_modelMatrix.scale(m_scale); // monkey.ply
+    m_modelMatrix.scale(m_scale);
     m_modelMatrix.rotate(0, 0, 1, 0);
     m_modelMatrix.rotate(-90, 1, 0, 0);
 
@@ -157,8 +156,6 @@ void AppGLScene::paintGL(void)
 
     painter.endNativePainting();
     painter.end();
-
-    //update();
 }
 
 void AppGLScene::initializeGL(void)
@@ -185,7 +182,17 @@ void AppGLScene::initializeGL(void)
 
 void AppGLScene::keyPressEvent(QKeyEvent* event)
 {
+    switch (event->key())
+    {
+    case Qt::Key_O:
+        m_proj = PROJ_ORTHO;
+        break;
+    case Qt::Key_P:
+        m_proj = PROJ_PERSP;
+        break;
+    }
 
+    update();
 }
 
 void AppGLScene::keyReleaseEvent(QKeyEvent *event)
@@ -209,9 +216,11 @@ void AppGLScene::mouseMoveEvent(QMouseEvent* event)
     {
         if (event->buttons() & Qt::MidButton)
         {
+            // TODO fix scaling factor, it's very crude now
+            //
             float scaleAdjust = dy;
 
-            scaleAdjust /= 100;
+            scaleAdjust /= 200;
 
             m_scale = m_scale + scaleAdjust;
             update();
@@ -219,7 +228,6 @@ void AppGLScene::mouseMoveEvent(QMouseEvent* event)
         }
     }
 }
-
 
 void AppGLScene::createGradient(void)
 {
@@ -236,4 +244,20 @@ void AppGLScene::drawBackground(QPainter& painter)
     painter.setPen(Qt::NoPen);
     painter.setBrush(m_gradient);
     painter.drawRect(rect());
+}
+
+void AppGLScene::setProjectionMatrix(void)
+{
+    m_projectionMatrix.setToIdentity();
+
+    switch (m_proj)
+    {
+    case PROJ_PERSP:
+        m_projectionMatrix.perspective(90, qreal(window()->width())/qreal(window()->height()), 0.5, 40);
+        break;
+    case PROJ_ORTHO:
+    default:
+        m_projectionMatrix.ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.5, 40);
+        break;
+    }
 }
