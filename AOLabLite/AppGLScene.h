@@ -4,6 +4,7 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLWidget>
 #include <QOpenGLShaderProgram>
+#include <QPoint>
 #include "ScenePoint.h"
 
 class AppGLScene : public QOpenGLWidget, protected QOpenGLFunctions
@@ -28,12 +29,18 @@ protected:
     void resizeGL(int w, int h) Q_DECL_OVERRIDE;
     void paintGL(void) Q_DECL_OVERRIDE;
     void initializeGL(void) Q_DECL_OVERRIDE;
+    void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
+    void keyReleaseEvent(QKeyEvent* event) Q_DECL_OVERRIDE;
+    void AppGLScene::mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+    void mouseMoveEvent(QMouseEvent* event) Q_DECL_OVERRIDE;
 
 private:
     void createGradient(void);
     void drawBackground(QPainter& painter);
 
+    QPoint m_lastPos;
     qreal m_angle = 30;
+    float m_scale = .03;
     QOpenGLShaderProgram m_shader;
     QVector<ScenePoint> m_data;
 

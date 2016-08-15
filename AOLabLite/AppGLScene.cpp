@@ -2,6 +2,7 @@
 #include <chrono>
 #include <QFile>
 #include <QPainter>
+#include <QKeyEvent>
 
 #include "GLHelpers.h"
 #include "AppGLScene.h"
@@ -86,14 +87,14 @@ void AppGLScene::viewBack(void)
 
 void AppGLScene::viewLeft(void)
 {
-    m_eye = {-2, 0, 0};
+    m_eye = {2, 0, 0};
     m_up = {0, 1, 0};
     update();
 }
 
 void AppGLScene::viewRight(void)
 {
-    m_eye = {2, 0, 0};
+    m_eye = {-2, 0, 0};
     m_up = {0, 1, 0};
     update();
 }
@@ -140,7 +141,7 @@ void AppGLScene::paintGL(void)
 
     m_modelMatrix.setToIdentity();
     //m_modelMatrix.scale(0.03f); // upper.ply
-    m_modelMatrix.scale(2); // monkey.ply
+    m_modelMatrix.scale(m_scale); // monkey.ply
     m_modelMatrix.rotate(0, 0, 1, 0);
     m_modelMatrix.rotate(-90, 1, 0, 0);
 
@@ -181,6 +182,44 @@ void AppGLScene::initializeGL(void)
     m_shader.setUniformValue("light.position", QVector3D(2, 1, 1));
     m_shader.setUniformValue("light.intensity", QVector3D(1, 1, 1));
 }
+
+void AppGLScene::keyPressEvent(QKeyEvent* event)
+{
+
+}
+
+void AppGLScene::keyReleaseEvent(QKeyEvent *event)
+{
+}
+
+void AppGLScene::mousePressEvent(QMouseEvent *event)
+{
+    if (event->modifiers() && Qt::AltModifier)
+    {
+        m_lastPos = event->pos();
+    }
+}
+
+void AppGLScene::mouseMoveEvent(QMouseEvent* event)
+{
+    int dx = event->x() - m_lastPos.x();
+    int dy = event->y() - m_lastPos.y();
+
+    if (event->modifiers() & Qt::AltModifier)
+    {
+        if (event->buttons() & Qt::MidButton)
+        {
+            float scaleAdjust = dy;
+
+            scaleAdjust /= 100;
+
+            m_scale = m_scale + scaleAdjust;
+            update();
+            m_lastPos = event->pos();
+        }
+    }
+}
+
 
 void AppGLScene::createGradient(void)
 {
