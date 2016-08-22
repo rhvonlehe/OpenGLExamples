@@ -7,8 +7,6 @@
 #include "GLHelpers.h"
 #include "AppGLScene.h"
 
-
-
 AppGLScene::AppGLScene()
 {
     QSurfaceFormat fmt;
@@ -74,42 +72,42 @@ void AppGLScene::drawScene(const QMatrix4x4 &mvMatrix)
 
 void AppGLScene::viewFront(void)
 {
-    m_eye = {0, 0, 2};
+    m_eye = {0, 0, eyeDistance};
     m_up = {0, 1, 0};
     update();
 }
 
 void AppGLScene::viewBack(void)
 {
-    m_eye = {0, 0, -2};
+    m_eye = {0, 0, -eyeDistance};
     m_up = {0, 1, 0};
     update();
 }
 
 void AppGLScene::viewLeft(void)
 {
-    m_eye = {2, 0, 0};
+    m_eye = {eyeDistance, 0, 0};
     m_up = {0, 1, 0};
     update();
 }
 
 void AppGLScene::viewRight(void)
 {
-    m_eye = {-2, 0, 0};
+    m_eye = {-eyeDistance, 0, 0};
     m_up = {0, 1, 0};
     update();
 }
 
 void AppGLScene::viewTop(void)
 {
-    m_eye = {0, 2, 0};
+    m_eye = {0, eyeDistance, 0};
     m_up = {0, 0, -1};
     update();
 }
 
 void AppGLScene::viewBottom(void)
 {
-    m_eye = {0, -2, 0};
+    m_eye = {0, -eyeDistance, 0};
     m_up = {0, 0, -1};
     update();
 }
@@ -161,7 +159,11 @@ void AppGLScene::paintGL(void)
 void AppGLScene::initializeGL(void)
 {
     initializeOpenGLFunctions();
+    m_initialWinWidth = rect().width();
+    m_initialWinHeight = rect().height();
     //glClearColor(0, 0, 0, 0);
+    QString glVersion = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+    qDebug() << "OpenGL version:" << glVersion;
 
     m_shader.addShaderFromSourceCode(QOpenGLShader::Vertex,
                                      fileContent(":/phong.vert"));
@@ -176,7 +178,7 @@ void AppGLScene::initializeGL(void)
     m_shader.setUniformValue("mat.ks", QVector3D(1.0f, 1.0f, 1.0f));
     m_shader.setUniformValue("mat.shininess", 128.0f);
 
-    m_shader.setUniformValue("light.position", QVector3D(2, 1, 1));
+    m_shader.setUniformValue("light.position", QVector3D(eyeDistance, 1, 1));
     m_shader.setUniformValue("light.intensity", QVector3D(1, 1, 1));
 }
 
@@ -216,13 +218,19 @@ void AppGLScene::mouseMoveEvent(QMouseEvent* event)
     {
         if (event->buttons() & Qt::MidButton)
         {
-            // TODO fix scaling factor, it's very crude now
-            //
-            float scaleAdjust = dy;
+//            // TODO fix scaling factor, it's very crude now
+//            //
+//            float scaleAdjust = dy;
 
-            scaleAdjust /= 200;
+//            scaleAdjust /= 200;
 
-            m_scale = m_scale + scaleAdjust;
+//            m_scale = m_scale + scaleAdjust;
+
+            dy *= 2;
+
+            float scaleAdjust = (1 + ((float)dy / (float) rect().height()));
+            m_scale = m_scale * scaleAdjust;
+
             update();
             m_lastPos = event->pos();
         }
@@ -249,15 +257,45 @@ void AppGLScene::drawBackground(QPainter& painter)
 void AppGLScene::setProjectionMatrix(void)
 {
     m_projectionMatrix.setToIdentity();
+    float windowWidth = rect().width();
+    float windowHeight = rect().height();
+    float left, right, bottom, top;
+    float aratio = (float) windowWidth / (float) windowHeight;
+    float orthoConst;
+    qDebug() << "win wid, win hei" << windowWidth << windowHeight;
+
+    // I modify the vertical FOV in an attempt to keep the size of the
+    // model the same as the vertical size of the window changes.
+    //
+    float vFov = 90 * ((float)windowHeight / m_initialWinHeight);
+    qDebug() << "vFov" << vFov;
 
     switch (m_proj)
     {
     case PROJ_PERSP:
-        m_projectionMatrix.perspective(90, qreal(window()->width())/qreal(window()->height()), 0.5, 40);
+        m_projectionMatrix.perspective(vFov, qreal(windowWidth)/qreal(windowHeight), 0.5, 40);
         break;
     case PROJ_ORTHO:
     default:
-        m_projectionMatrix.ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.5, 40);
+        if (windowWidth > windowHeight)
+        {
+            orthoConst = windowHeight / 300;
+            top = orthoConst; //3.0f;
+            bottom = -top;
+            right = top * aratio;
+            left = -right;
+        }
+        else
+        {
+            orthoConst = windowWidth / 300;
+            right = orthoConst; //5.0f;
+            left = -right;
+            top = right / aratio;
+            bottom = -top;
+        }
+
+        qDebug() << "l r b t = " << left << right << bottom << top;
+        m_projectionMatrix.ortho(left, right, bottom, top, 0.5, 40);
         break;
     }
 }

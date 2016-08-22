@@ -26,21 +26,21 @@ bool PLYReader::read()
     line = stream.readLine();
     int vertexCount = 0, faceCount = 0;
 
-    while(line != "end_header")
+    while (line != "end_header")
     {
-        if(line.startsWith("element"))
+        if (line.startsWith("element"))
         {
             QStringList args = line.split(QRegExp("\\s+"));
-            if(args.count() < 3)
+            if (args.count() < 3)
             {
                 break;
             }
 
-            if(args.at(1) == "vertex")
+            if (args.at(1) == "vertex")
             {
                 vertexCount = args.at(2).toInt();
             }
-            else if(args.at(1) == "face")
+            else if (args.at(1) == "face")
             {
                 faceCount = args.at(2).toInt();
             }

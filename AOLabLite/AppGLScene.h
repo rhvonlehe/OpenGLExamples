@@ -7,6 +7,8 @@
 #include <QPoint>
 #include "ScenePoint.h"
 
+const float eyeDistance = 3;
+
 class AppGLScene : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
@@ -42,13 +44,15 @@ private:
     void setProjectionMatrix(void);
 
     QPoint m_lastPos;
+    float m_initialWinHeight;
+    float m_initialWinWidth;
     qreal m_angle = 30;
     float m_scale = 0.1f;
     QOpenGLShaderProgram m_shader;
     QVector<ScenePoint> m_data;
 
     Projection m_proj = PROJ_PERSP;
-    QVector3D m_eye = {0, 0, 2};
+    QVector3D m_eye = {0, 0, eyeDistance};
     QVector3D m_center = {0, 0, 0};
     QVector3D m_up = {0, 1, 0};
     QColor m_background;
