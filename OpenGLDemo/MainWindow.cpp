@@ -3,15 +3,21 @@
 #include <QGridLayout>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <vector>
 #include "MainWindow.h"
 #include "AppGLScene.h"
 #include "ScenePoint.h"
-#include "PLYReader.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     QMenu* fileMenu = menuBar()->addMenu("&File");
-    fileMenu->addAction("&Import PLY file", this, &MainWindow::importPly);
+    fileMenu->addAction("&Import Monkey PLY file",
+                        this,
+                        [this] { importPly(":/monkey.ply", m_scene); });
+    fileMenu->addAction("&Import Teeth PLY file",
+                        this,
+                        [this] { importPly(":/upper.ply", m_scene2); });
+
     fileMenu->addAction("E&xit", this, &QWidget::close);
 
     resize(QDesktopWidget().availableGeometry(this).size() * 0.7);
@@ -20,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     m_layout = new QGridLayout(mainWidget);
     m_scene = new AppGLScene();
+    m_scene2 = new AppGLScene();
 
     QPushButton* front = new QPushButton("Front", mainWidget);
     QPushButton* back = new QPushButton("Back", mainWidget);
@@ -38,7 +45,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     viewButtonLayout->addWidget(bottom);
 
     m_layout->addWidget(viewButtonWidget, 0, 0, 1, 1);
-    m_layout->addWidget(m_scene, 0, 1, 1, 9);
+    m_layout->addWidget(m_scene, 0, 1, 1, 5);
+    m_layout->addWidget(m_scene2, 0, 6, 1, 5);
     mainWidget->setLayout(m_layout);
 
     setCentralWidget(mainWidget);
@@ -51,14 +59,25 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(bottom, &QPushButton::clicked, m_scene, &AppGLScene::viewBottom);
 }
 
-void MainWindow::importPly(void)
+void MainWindow::importPly(QString filename, AppGLScene* scene)
 {
     // TODO: Create a modal dialog to do this, but as a first pass
     // just load a hard-coded file
     //
-//    PLYReader reader(":/upper.ply");
-    PLYReader reader(":/monkey.ply");
+    PLYReader reader(filename);
+
     QVector<ScenePoint> plyData;
+
+    if (populateScenePoints(reader, plyData))
+    {
+        scene->addScenePoints(plyData);
+    }
+}
+
+bool MainWindow::populateScenePoints(PLYReader& reader,
+                                     QVector<ScenePoint>& scenePoints)
+{
+    bool retVal = false;
 
     if (reader.read())
     {
@@ -74,10 +93,12 @@ void MainWindow::importPly(void)
                 int vertexId = face.at(idx);
                 pt = vertices.at(vertexId);
 
-                plyData << pt;
+                scenePoints << pt;
             }
         }
 
-        m_scene->addScenePoints(plyData);
+        retVal = true;
     }
+
+    return retVal;
 }

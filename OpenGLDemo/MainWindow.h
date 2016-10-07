@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "PLYReader.h"
+
 
 class QGridLayout;
 class AppGLScene;
@@ -15,12 +17,15 @@ public:
 signals:
 
 public slots:
-    void importPly(void);
+    void importPly(QString filename, AppGLScene* scene);
 
 private:
+    bool MainWindow::populateScenePoints(PLYReader& reader,
+                                         QVector<ScenePoint>& scenePoints);
+
     QGridLayout* m_layout;
     AppGLScene* m_scene;
-
+    AppGLScene* m_scene2;
 
 };
 
