@@ -19,4 +19,4 @@ DISTFILES +=
 RESOURCES += \
     Resources.qrc
 
-
+TRANSLATIONS = opengldemo_sp.ts

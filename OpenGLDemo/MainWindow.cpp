@@ -28,12 +28,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     m_scene = new AppGLScene();
     m_scene2 = new AppGLScene();
 
-    QPushButton* front = new QPushButton("Front", mainWidget);
-    QPushButton* back = new QPushButton("Back", mainWidget);
-    QPushButton* left = new QPushButton("Left", mainWidget);
-    QPushButton* right = new QPushButton("Right", mainWidget);
-    QPushButton* top = new QPushButton("Top", mainWidget);
-    QPushButton* bottom = new QPushButton("Bottom", mainWidget);
+    QPushButton* front = new QPushButton(tr("Front"), mainWidget);
+    QPushButton* back = new QPushButton(tr("Back"), mainWidget);
+    QPushButton* left = new QPushButton(tr("Left"), mainWidget);
+    QPushButton* right = new QPushButton(tr("Right"), mainWidget);
+    QPushButton* top = new QPushButton(tr("Top"), mainWidget);
+    QPushButton* bottom = new QPushButton(tr("Bottom"), mainWidget);
 
     QWidget* viewButtonWidget = new QWidget(mainWidget);
     QVBoxLayout* viewButtonLayout = new QVBoxLayout(viewButtonWidget);
