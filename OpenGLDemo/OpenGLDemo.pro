@@ -1,4 +1,4 @@
-QT = core gui widgets
+QT = core gui widgets printsupport
 CONFIG += c++11
 
 HEADERS += \

@@ -18,6 +18,7 @@ signals:
 
 public slots:
     void importPly(QString filename, AppGLScene* scene);
+    void printPly(QString filename, AppGLScene* scene);
 
 private:
     bool MainWindow::populateScenePoints(PLYReader& reader,

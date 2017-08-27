@@ -14,9 +14,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     fileMenu->addAction("&Import Monkey PLY file",
                         this,
                         [this] { importPly(":/monkey.ply", m_scene); });
+    fileMenu->addAction("&Print Monkey",
+                        this,
+                        [this] { printPly("monkey", m_scene); });
     fileMenu->addAction("&Import Teeth PLY file",
                         this,
                         [this] { importPly(":/upper.ply", m_scene2); });
+    fileMenu->addAction("&Print Teeth",
+                        this,
+                        [this] { printPly("upper", m_scene2); });
 
     fileMenu->addAction("E&xit", this, &QWidget::close);
 
@@ -72,6 +78,11 @@ void MainWindow::importPly(QString filename, AppGLScene* scene)
     {
         scene->addScenePoints(plyData);
     }
+}
+
+void MainWindow::printPly(QString filename, AppGLScene* scene)
+{
+    scene->printPdf(filename);
 }
 
 bool MainWindow::populateScenePoints(PLYReader& reader,

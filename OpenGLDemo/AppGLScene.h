@@ -20,6 +20,7 @@ public:
 
     void addScenePoints(QVector<ScenePoint>& data);
     void drawScene(const QMatrix4x4 &mvMatrix);
+    void printPdf(QString& filename);
 
 public slots:
     void viewFront(void);
@@ -50,6 +51,8 @@ private:
     float m_scale = 0.1f;
     QOpenGLShaderProgram m_shader;
     QVector<ScenePoint> m_data;
+
+    QPaintDevice* m_paintContext;
 
     Projection m_proj = PROJ_PERSP;
     QVector3D m_eye = {0, 0, eyeDistance};

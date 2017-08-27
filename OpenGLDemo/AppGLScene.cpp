@@ -3,11 +3,13 @@
 #include <QFile>
 #include <QPainter>
 #include <QKeyEvent>
+#include <QtPrintSupport/QPrinter>>
 
 #include "GLHelpers.h"
 #include "AppGLScene.h"
 
 AppGLScene::AppGLScene()
+    : m_paintContext(this)
 {
     QSurfaceFormat fmt;
     fmt.setSamples(16);
@@ -68,6 +70,27 @@ void AppGLScene::drawScene(const QMatrix4x4 &mvMatrix)
 
     m_shader.disableAttributeArray("Vertex");
     m_shader.disableAttributeArray("Normal");
+}
+
+void AppGLScene::printPdf(QString &filename)
+{
+    QPrinter printer;
+    printer.setOutputFormat(QPrinter::NativeFormat);
+    //printer.setOutputFormat(QPrinter::PdfFormat);
+    //printer.setOutputFileName(filename);
+
+    QImage image = grabFramebuffer();
+
+    QPainter painter;
+    painter.begin(&printer);
+    painter.drawImage(0, 0, image);
+    painter.end();
+
+
+//    m_paintContext = &printer;
+//    paintGL();
+
+//    m_paintContext = this;
 }
 
 void AppGLScene::viewFront(void)
