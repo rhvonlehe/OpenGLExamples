@@ -12,7 +12,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = nullptr);
 
 signals:
 
@@ -21,8 +21,8 @@ public slots:
     void printPly(QString filename, AppGLScene* scene);
 
 private:
-    bool MainWindow::populateScenePoints(PLYReader& reader,
-                                         QVector<ScenePoint>& scenePoints);
+    bool populateScenePoints(PLYReader& reader,
+                             QVector<ScenePoint>& scenePoints);
 
     QGridLayout* m_layout;
     AppGLScene* m_scene;
