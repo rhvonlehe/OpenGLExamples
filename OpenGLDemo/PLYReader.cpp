@@ -1,4 +1,4 @@
-#include "plyreader.h"
+#include "PLYReader.h"
 #include <QFile>
 
 PLYReader::PLYReader(const QString &fileName)
