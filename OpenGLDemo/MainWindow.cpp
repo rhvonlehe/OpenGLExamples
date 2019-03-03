@@ -7,6 +7,7 @@
 #include "MainWindow.h"
 #include "AppGLScene.h"
 #include "ScenePoint.h"
+#include "SceneContainer.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -72,9 +73,9 @@ void MainWindow::importPly(QString filename, AppGLScene* scene)
     //
     PLYReader reader(filename);
 
-    QVector<ScenePoint> plyData;
+    SceneContainer plyData;
 
-    if (populateScenePoints(reader, plyData))
+    if (populateSceneContainer(reader, plyData))
     {
         scene->addScenePoints(plyData);
     }
@@ -85,8 +86,8 @@ void MainWindow::printPly(QString filename, AppGLScene* scene)
     scene->printPdf(filename);
 }
 
-bool MainWindow::populateScenePoints(PLYReader& reader,
-                                     QVector<ScenePoint>& scenePoints)
+bool MainWindow::populateSceneContainer(PLYReader& reader,
+                                        SceneContainer& sceneContainer)
 {
     bool retVal = false;
 
@@ -104,7 +105,7 @@ bool MainWindow::populateScenePoints(PLYReader& reader,
                 int vertexId = face.at(idx);
                 pt = vertices.at(vertexId);
 
-                scenePoints << pt;
+                sceneContainer.points << pt;
             }
         }
 

@@ -7,12 +7,16 @@ struct ScenePoint
 {
     QVector3D coords;
     QVector3D normal;
+    QVector3D color;
 
-    ScenePoint(const QVector3D &c = QVector3D(),
-               const QVector3D &n = QVector3D())
-    {
-        coords = c; normal=n;
-    }
+    ScenePoint() = default;
+
+//    ScenePoint(const QVector3D &crd = QVector3D(),
+//               const QVector3D &nrm = QVector3D(),
+//               )
+//    {
+//        coords = crd; normal=nrm; color = col;
+//    }
 };
 
 #endif // SCENEPOINT_H

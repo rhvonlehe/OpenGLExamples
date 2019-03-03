@@ -7,6 +7,8 @@
 
 class QGridLayout;
 class AppGLScene;
+class SceneContainer;
+
 
 class MainWindow : public QMainWindow
 {
@@ -21,8 +23,8 @@ public slots:
     void printPly(QString filename, AppGLScene* scene);
 
 private:
-    bool populateScenePoints(PLYReader& reader,
-                             QVector<ScenePoint>& scenePoints);
+    bool populateSceneContainer(PLYReader& reader,
+                                SceneContainer& scenePoints);
 
     QGridLayout* m_layout;
     AppGLScene* m_scene;

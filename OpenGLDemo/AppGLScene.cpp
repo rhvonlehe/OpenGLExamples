@@ -25,28 +25,29 @@ AppGLScene::~AppGLScene()
     setMinimumSize(300, 250);
 }
 
-void AppGLScene::addScenePoints(QVector<ScenePoint>& data)
+void AppGLScene::addScenePoints(SceneContainer& sceneContainer)
 {
-    // If m_data has nothing in it, we can just 'move' the
-    // contents of data into it.  Else append.
-    //
-    if (!m_data.length())
-    {
-        m_data = std::move(data);
-    }
-    else
-    {
-        m_data << data;
-    }
+    m_sceneContainer = std::move(sceneContainer);
 
     makeCurrent();
     m_shader.bind();
-    m_shader.setAttributeArray("Vertex", GL_FLOAT, m_data.constData(), 3,
+
+    m_shader.setAttributeArray("Vertex", GL_FLOAT, m_sceneContainer.points.constData(), 3,
                                sizeof(ScenePoint));
     m_shader.enableAttributeArray("Vertex");
-    m_shader.setAttributeArray("Normal", GL_FLOAT, &m_data[0].normal, 3,
-                               sizeof(ScenePoint));
-    m_shader.enableAttributeArray("Normal");
+    if (m_sceneContainer.hasNormal)
+    {
+        m_shader.setAttributeArray("Normal", GL_FLOAT, &m_sceneContainer.points[0].normal, 3,
+                sizeof(ScenePoint));
+        m_shader.enableAttributeArray("Normal");
+    }
+    if (m_sceneContainer.hasColor)
+    {
+        m_shader.setAttributeArray("Color", GL_FLOAT, &m_sceneContainer.points[0].color, 3,
+                sizeof(ScenePoint));
+        m_shader.enableAttributeArray("Color");
+
+    }
 
     update();
 }
@@ -55,18 +56,28 @@ void AppGLScene::drawScene(const QMatrix4x4 &mvMatrix)
 {
     m_shader.bind();
 
-    m_shader.setAttributeArray("Vertex", GL_FLOAT, m_data.constData(), 3,
+    m_shader.setAttributeArray("Vertex", GL_FLOAT, m_sceneContainer.points.constData(), 3,
                                sizeof(ScenePoint));
     m_shader.enableAttributeArray("Vertex");
-    m_shader.setAttributeArray("Normal", GL_FLOAT, &m_data[0].normal, 3,
-            sizeof(ScenePoint));
-    m_shader.enableAttributeArray("Normal");
+    if (m_sceneContainer.hasNormal)
+    {
+        m_shader.setAttributeArray("Normal", GL_FLOAT, &m_sceneContainer.points[0].normal, 3,
+                sizeof(ScenePoint));
+        m_shader.enableAttributeArray("Normal");
+    }
+    if (m_sceneContainer.hasColor)
+    {
+        m_shader.setAttributeArray("Color", GL_FLOAT, &m_sceneContainer.points[0].color, 3,
+                sizeof(ScenePoint));
+        m_shader.enableAttributeArray("Color");
+    }
+
     m_shader.setUniformValue("projectionMatrix", m_projectionMatrix);
     m_shader.setUniformValue("modelViewMatrix", mvMatrix);
     m_shader.setUniformValue("mvpMatrix", m_projectionMatrix*mvMatrix);
     m_shader.setUniformValue("normalMatrix", mvMatrix.normalMatrix());
 
-    glDrawArrays(GL_TRIANGLES, 0, m_data.size());
+    glDrawArrays(GL_TRIANGLES, 0, m_sceneContainer.points.size());
 
     m_shader.disableAttributeArray("Vertex");
     m_shader.disableAttributeArray("Normal");
@@ -168,7 +179,7 @@ void AppGLScene::paintGL(void)
 
     QMatrix4x4 modelViewMatrix = m_viewMatrix*m_modelMatrix;
 
-    if (m_data.size())
+    if (m_sceneContainer.points.size())
     {
         drawScene(modelViewMatrix);
     }

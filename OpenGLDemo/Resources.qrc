@@ -4,5 +4,6 @@
         <file>phong.frag</file>
         <file>phong.vert</file>
         <file>monkey.ply</file>
+        <file>skull-color.ply</file>
     </qresource>
 </RCC>

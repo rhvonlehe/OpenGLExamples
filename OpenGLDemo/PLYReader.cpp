@@ -14,6 +14,8 @@ PLYReader::PLYReader(QIODevice *device)
 
 bool PLYReader::read()
 {
+    m_hasColor = false;
+    m_hasNormal = false;
     m_vertices.clear();
     m_faces.clear();
     QTextStream stream(device());
@@ -35,7 +37,17 @@ bool PLYReader::read()
             {
                 break;
             }
-
+            if (args.at(1) == "property")
+            {
+                if (args.at(3) == "nx")
+                {
+                    m_hasNormal = true;
+                }
+                else if (args.at(3) == "red")
+                {
+                    m_hasColor = true;
+                }
+            }
             if (args.at(1) == "vertex")
             {
                 vertexCount = args.at(2).toInt();
@@ -77,12 +89,29 @@ void PLYReader::readFaces(QTextStream &stream, int faceCount)
 ScenePoint PLYReader::readVertex(QTextStream &stream)
 {
     ScenePoint pt;
-    float xpos, ypos, zpos;
-    float nx, ny, nz;
+    float xpos{0};
+    float ypos{0};
+    float zpos{0};
+    float nx{0};
+    float ny{0};
+    float nz{0};
+    float red{255};
+    float green{255};
+    float blue{255};
 
-    stream >> xpos >> ypos >> zpos >> nx >> ny >> nz;
+    stream >> xpos >> ypos >> zpos;
+
+    if (m_hasNormal)
+    {
+        stream >> nx >> ny >> nz;
+    }
+    if (m_hasColor)
+    {
+        stream >> red >> green >> blue;
+    }
     pt.coords = QVector3D(xpos, ypos, zpos);
     pt.normal = QVector3D(nx, ny, nz);
+    pt.color = QVector3D(red, green, blue);
 
     return pt;
 }
