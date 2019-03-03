@@ -6,13 +6,15 @@ HEADERS += \
     PLYReader.h \
     MainWindow.h \
     ScenePoint.h \
-    GLHelpers.h
+    GLHelpers.h \
+    SceneContainer.h
 
 SOURCES += \
     AppGLScene.cpp \
     PLYReader.cpp \
     main.cpp \
-    MainWindow.cpp
+    MainWindow.cpp \
+    SceneContainer.cpp
 
 DISTFILES +=
 

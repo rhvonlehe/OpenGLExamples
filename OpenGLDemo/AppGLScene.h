@@ -6,6 +6,7 @@
 #include <QOpenGLShaderProgram>
 #include <QPoint>
 #include "ScenePoint.h"
+#include <SceneContainer.h>
 
 const float eyeDistance = 3;
 
@@ -16,9 +17,9 @@ public:
     enum Projection {PROJ_PERSP, PROJ_ORTHO, PROJ_FRUST};
 
     AppGLScene();
-    virtual ~AppGLScene();
+    virtual ~AppGLScene() override;
 
-    void addScenePoints(QVector<ScenePoint>& data);
+    void addScenePoints(SceneContainer& sceneContainer);
     void drawScene(const QMatrix4x4 &mvMatrix);
     void printPdf(QString& filename);
 
@@ -50,7 +51,7 @@ private:
     qreal m_angle = 30;
     float m_scale = 0.1f;
     QOpenGLShaderProgram m_shader;
-    QVector<ScenePoint> m_data;
+    SceneContainer     m_sceneContainer;
 
     QPaintDevice* m_paintContext;
 
